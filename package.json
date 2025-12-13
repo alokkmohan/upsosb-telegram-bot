@@ -1,18 +1,15 @@
 {
-  "name": "whatsapp-boat",
-  "version": "1.0.0",
-  "description": "",
-  "main": "bot.js",
+  "name": "upsosb-telegram-bot",
+  "version": "2.0.0",
+  "description": "UPSOSB Educational Bot",
+  "main": "telegram-bot.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node telegram-bot.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "node-telegram-bot-api": "^0.67.0",
-    "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "^1.34.2"
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
