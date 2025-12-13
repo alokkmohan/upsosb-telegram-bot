@@ -1,0 +1,45 @@
+2025/12/10-22:02:49.436 9790 Reusing MANIFEST /home/alok-mohan/WhatsApp Boat/.wwebjs_auth/session/Default/Local Storage/leveldb/MANIFEST-000001
+2025/12/10-22:02:49.436 9790 Recovering log #7
+2025/12/10-22:02:49.436 9790 Reusing old log /home/alok-mohan/WhatsApp Boat/.wwebjs_auth/session/Default/Local Storage/leveldb/000007.log 
+2025/12/12-10:05:30.341 aac7 Level-0 table #11: started
+2025/12/12-10:05:30.343 aac7 Level-0 table #11: 13654 bytes OK
+2025/12/12-10:05:30.344 aac7 Delete type=0 #7
+2025/12/12-12:03:50.087 b759 Level-0 table #13: started
+2025/12/12-12:03:50.115 b759 Level-0 table #13: 14357 bytes OK
+2025/12/12-12:03:50.116 b759 Delete type=0 #10
+2025/12/12-21:26:55.481 ed42 Level-0 table #15: started
+2025/12/12-21:26:55.511 ed42 Level-0 table #15: 13908 bytes OK
+2025/12/12-21:26:55.512 ed42 Delete type=0 #12
+2025/12/12-21:35:58.375 ee18 Level-0 table #17: started
+2025/12/12-21:35:58.403 ee18 Level-0 table #17: 14509 bytes OK
+2025/12/12-21:35:58.405 ee18 Delete type=0 #14
+2025/12/12-21:35:58.405 ee18 Compacting 4@0 + 1@1 files
+2025/12/12-21:35:58.411 ee18 Generated table #18@0: 33 keys, 3379 bytes
+2025/12/12-21:35:58.411 ee18 Compacted 4@0 + 1@1 files => 3379 bytes
+2025/12/12-21:35:58.412 ee18 compacted to: files[ 0 1 1 0 0 0 0 ]
+2025/12/12-21:35:58.413 ee18 Delete type=2 #8
+2025/12/12-21:35:58.413 ee18 Delete type=2 #11
+2025/12/12-21:35:58.413 ee18 Delete type=2 #13
+2025/12/12-21:35:58.413 ee18 Delete type=2 #15
+2025/12/12-21:35:58.413 ee18 Delete type=2 #17
+2025/12/12-22:09:35.946 f5b1 Level-0 table #20: started
+2025/12/12-22:09:35.975 f5b1 Level-0 table #20: 15546 bytes OK
+2025/12/12-22:09:35.976 f5b1 Delete type=0 #16
+2025/12/13-10:11:51.583 fb52 Level-0 table #22: started
+2025/12/13-10:11:51.611 fb52 Level-0 table #22: 13747 bytes OK
+2025/12/13-10:11:51.613 fb52 Delete type=0 #19
+2025/12/13-10:22:08.581 10086 Level-0 table #24: started
+2025/12/13-10:22:08.610 10086 Level-0 table #24: 14217 bytes OK
+2025/12/13-10:22:08.611 10086 Delete type=0 #21
+2025/12/13-10:33:51.948 10696 Level-0 table #26: started
+2025/12/13-10:33:51.977 10696 Level-0 table #26: 13414 bytes OK
+2025/12/13-10:33:51.978 10696 Delete type=0 #23
+2025/12/13-10:33:51.978 10696 Compacting 4@0 + 1@1 files
+2025/12/13-10:33:51.980 10696 Generated table #27@0: 33 keys, 3564 bytes
+2025/12/13-10:33:51.980 10696 Compacted 4@0 + 1@1 files => 3564 bytes
+2025/12/13-10:33:51.981 10696 compacted to: files[ 0 1 1 0 0 0 0 ]
+2025/12/13-10:33:51.981 10696 Delete type=2 #24
+2025/12/13-10:33:51.982 10696 Delete type=2 #18
+2025/12/13-10:33:51.982 10696 Delete type=2 #26
+2025/12/13-10:33:51.982 10696 Delete type=2 #20
+2025/12/13-10:33:51.982 10696 Delete type=2 #22

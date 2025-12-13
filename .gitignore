@@ -1,0 +1,33 @@
+# Environment variables
+.env
+
+# Logs
+bot.log
+*.log
+
+# Node modules (if using npm)
+node_modules/
+package-lock.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+temp/
+
+# PDFs (optional - agar PDFs private rakhni hain)
+# Subject/**/*.pdf
+# PDF English/*.pdf
+# PDF Hindi/*.pdf
+
+# Backup files
+*.bak
+*~
