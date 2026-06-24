@@ -6,73 +6,148 @@ const db = require('./db');
 const token = process.env.BOT_TOKEN || '8557217217:AAHwgY6QgFyuCF4Nz1ylIqz0-_JOUmxZmoU';
 
 const bot = new TelegramBot(token, {
-  polling: {
-    interval: 300,
-    autoStart: true,
-    params: { timeout: 10 }
-  },
-  request: {
-    agentOptions: { keepAlive: true, family: 4 }
-  }
+  polling: { interval: 300, autoStart: true, params: { timeout: 10 } },
+  request: { agentOptions: { keepAlive: true, family: 4 } }
 });
 
 // ============================================================
-// STUDENT DATABASE (authentication ke liye, agar require_auth=true)
+// USER STATE & LANGUAGE
 // ============================================================
-const studentDatabase = {
-  "12345": { name: "Rahul Kumar", class: 10, dob: "01/01/2000", district: "Agra" },
-  "10001": { name: "Priya Singh", class: 10, dob: "15/08/2008", district: "Prayagraj" },
-  "10002": { name: "Amit Sharma", class: 10, dob: "20/06/2009", district: "Lucknow" },
-  "11001": { name: "Anjali Mishra", class: 11, dob: "05/01/2008", district: "Mathura" },
-  "12001": { name: "Divya Pandey", class: 12, dob: "08/02/2006", district: "Prayagraj" },
-  "12002": { name: "Sanjay Kumar", class: 12, dob: "30/10/2006", district: "Ghaziabad" },
+const userState = {};
+const userLang = {}; // chatId -> 'hi' | 'en'
+
+function getLang(chatId) {
+  return userLang[chatId] || 'hi';
+}
+
+// ============================================================
+// TRANSLATIONS
+// ============================================================
+const T = {
+  hi: {
+    welcome_default: '🙏 Namaskar! UPSOSB Bot mein aapka swagat hai.\n\nNiche se apna option chunein:',
+    home_btn: '🏠 Mukhya Menu',
+    back_btn: '⬅️ Wapas',
+    lang_btn: '🌐 English',
+    lang_changed: '✅ Bhasha Hindi mein set ho gayi!',
+    no_content: '_(Is menu mein abhi koi content nahi hai)_',
+    no_menus: '_(Admin ne abhi koi menu nahi banaya hai)_',
+    file_missing: '_(File server par upalabdh nahi hai)_',
+    ask_reg: '🔐 Apna *Registration Number* darj karein:',
+    wrong_reg: '❌ Registration number galat hai.\n\nKripya sahi number darj karein:',
+    ask_dob: '📅 Aapka Registration Number mila!\n\nAb *Date of Birth* darj karein (DD/MM/YYYY):',
+    wrong_dob: '❌ Date of Birth galat hai.\n\nFormat: DD/MM/YYYY\nDobara try karein:',
+    login_ok: '✅ Login safal!\n\n*Namaskar {name}!*\nClass: {class} | District: {district}',
+  },
+  en: {
+    welcome_default: '🙏 Welcome to UPSOSB Bot!\n\nPlease select an option below:',
+    home_btn: '🏠 Main Menu',
+    back_btn: '⬅️ Back',
+    lang_btn: '🌐 हिंदी',
+    lang_changed: '✅ Language set to English!',
+    no_content: '_(No content available in this menu yet)_',
+    no_menus: '_(No menus created yet by admin)_',
+    file_missing: '_(File not available on server)_',
+    ask_reg: '🔐 Please enter your *Registration Number*:',
+    wrong_reg: '❌ Registration number is incorrect.\n\nPlease enter the correct number:',
+    ask_dob: '📅 Registration number found!\n\nNow enter your *Date of Birth* (DD/MM/YYYY):',
+    wrong_dob: '❌ Date of Birth is incorrect.\n\nFormat: DD/MM/YYYY\nPlease try again:',
+    login_ok: '✅ Login successful!\n\n*Hello {name}!*\nClass: {class} | District: {district}',
+  }
 };
 
-// User state (auth flow ke liye)
-const userState = {};
+function t(chatId, key, vars = {}) {
+  const lang = getLang(chatId);
+  let str = T[lang][key] || T['hi'][key] || key;
+  Object.entries(vars).forEach(([k, v]) => { str = str.replace(`{${k}}`, v); });
+  return str;
+}
+
+// Get menu title in user's language
+function menuTitle(menu, chatId) {
+  const lang = getLang(chatId);
+  const title = (lang === 'en' && menu.title_en) ? menu.title_en : menu.title;
+  return (menu.emoji ? menu.emoji + ' ' : '') + title;
+}
 
 // ============================================================
-// HELPERS
+// STUDENT DATABASE
 // ============================================================
+const studentDatabase = {
+  "12345": { name: "Rahul Kumar",   class: 10, dob: "01/01/2000", district: "Agra" },
+  "10001": { name: "Priya Singh",   class: 10, dob: "15/08/2008", district: "Prayagraj" },
+  "10002": { name: "Amit Sharma",   class: 10, dob: "20/06/2009", district: "Lucknow" },
+  "11001": { name: "Anjali Mishra", class: 11, dob: "05/01/2008", district: "Mathura" },
+  "12001": { name: "Divya Pandey",  class: 12, dob: "08/02/2006", district: "Prayagraj" },
+  "12002": { name: "Sanjay Kumar",  class: 12, dob: "30/10/2006", district: "Ghaziabad" },
+};
 
-function buildKeyboard(menus, backData) {
+// ============================================================
+// KEYBOARD BUILDER
+// ============================================================
+function buildKeyboard(menus, backData, chatId) {
   const rows = [];
   for (let i = 0; i < menus.length; i += 2) {
-    const row = [{ text: (menus[i].emoji ? menus[i].emoji + ' ' : '') + menus[i].title, callback_data: 'm:' + menus[i].id }];
-    if (menus[i + 1]) row.push({ text: (menus[i + 1].emoji ? menus[i + 1].emoji + ' ' : '') + menus[i + 1].title, callback_data: 'm:' + menus[i + 1].id });
+    const row = [{ text: menuTitle(menus[i], chatId), callback_data: 'm:' + menus[i].id }];
+    if (menus[i + 1]) row.push({ text: menuTitle(menus[i + 1], chatId), callback_data: 'm:' + menus[i + 1].id });
     rows.push(row);
   }
-  if (backData) rows.push([{ text: backData === 'home' ? '🏠 Main Menu' : '⬅️ Wapas', callback_data: backData }]);
+  if (backData) {
+    rows.push([{ text: backData === 'home' ? t(chatId, 'home_btn') : t(chatId, 'back_btn'), callback_data: backData }]);
+  }
   return { inline_keyboard: rows };
 }
 
+function buildMainKeyboard(menus, chatId) {
+  const rows = [];
+  for (let i = 0; i < menus.length; i += 2) {
+    const row = [{ text: menuTitle(menus[i], chatId), callback_data: 'm:' + menus[i].id }];
+    if (menus[i + 1]) row.push({ text: menuTitle(menus[i + 1], chatId), callback_data: 'm:' + menus[i + 1].id });
+    rows.push(row);
+  }
+  // Language toggle button at bottom
+  rows.push([{ text: t(chatId, 'lang_btn'), callback_data: 'lang' }]);
+  return { inline_keyboard: rows };
+}
+
+// ============================================================
+// SHOW MAIN MENU
+// ============================================================
 async function showMainMenu(chatId, msgId) {
   const settings = db.getSettings();
   const menus = db.getMenusByParent(null);
-  const welcomeText = settings.welcome_message || '🙏 UPSOSB Bot mein aapka swagat hai!\n\nNiche se option chunein:';
+  const lang = getLang(chatId);
+
+  // Welcome message — use language-specific if set
+  const welcomeText = (lang === 'en' && settings.welcome_message_en)
+    ? settings.welcome_message_en
+    : (settings.welcome_message || t(chatId, 'welcome_default'));
 
   if (!menus.length) {
-    return bot.sendMessage(chatId, welcomeText + '\n\n_(Admin ne abhi koi menu nahi banaya hai)_', { parse_mode: 'Markdown' });
+    return bot.sendMessage(chatId, welcomeText + '\n\n' + t(chatId, 'no_menus'), { parse_mode: 'Markdown' });
   }
 
-  const keyboard = buildKeyboard(menus, null);
+  const keyboard = buildMainKeyboard(menus, chatId);
 
   if (msgId) {
     try {
-      await bot.editMessageText(welcomeText, { chat_id: chatId, message_id: msgId, reply_markup: keyboard });
+      await bot.editMessageText(welcomeText, { chat_id: chatId, message_id: msgId, reply_markup: keyboard, parse_mode: 'Markdown' });
     } catch (e) {
-      await bot.sendMessage(chatId, welcomeText, { reply_markup: keyboard });
+      await bot.sendMessage(chatId, welcomeText, { reply_markup: keyboard, parse_mode: 'Markdown' });
     }
   } else {
-    // Logo bhejna agar set ho
+    // Send logo if set
     const logoPath = settings.logo_path ? path.join(__dirname, settings.logo_path) : null;
     if (logoPath && fs.existsSync(logoPath)) {
       try { await bot.sendPhoto(chatId, logoPath); } catch (e) {}
     }
-    await bot.sendMessage(chatId, welcomeText, { reply_markup: keyboard });
+    await bot.sendMessage(chatId, welcomeText, { reply_markup: keyboard, parse_mode: 'Markdown' });
   }
 }
 
+// ============================================================
+// SHOW MENU
+// ============================================================
 async function showMenu(chatId, msgId, menuId) {
   const menu = db.getMenu(menuId);
   if (!menu) return bot.sendMessage(chatId, '❌ Menu nahi mila.');
@@ -80,47 +155,54 @@ async function showMenu(chatId, msgId, menuId) {
   const subMenus = db.getMenusByParent(menuId);
   const content = db.getMenuContent(menuId);
   const backData = menu.parent_id ? 'm:' + menu.parent_id : 'home';
-  const menuLabel = (menu.emoji ? menu.emoji + ' ' : '') + menu.title;
+  const lang = getLang(chatId);
 
-  // Pehle saari content bhejo
+  // Send content items
   for (const c of content) {
+    // Pick language-specific content
+    const text = (lang === 'en' && c.content_en) ? c.content_en : c.content;
+    const title = (lang === 'en' && c.title_en) ? c.title_en : c.title;
+
     if (c.type === 'text') {
-      await bot.sendMessage(chatId, c.content, { parse_mode: 'Markdown' });
+      if (text) await bot.sendMessage(chatId, text, { parse_mode: 'Markdown' });
     } else if (c.type === 'pdf') {
       const filePath = path.join(__dirname, c.file_path);
       if (fs.existsSync(filePath)) {
-        await bot.sendDocument(chatId, filePath, { caption: c.title || '' });
+        await bot.sendDocument(chatId, filePath, { caption: title || '' });
       } else {
-        await bot.sendMessage(chatId, `📄 *${c.title}*\n_(File upalabdh nahi hai)_`, { parse_mode: 'Markdown' });
+        await bot.sendMessage(chatId, `📄 *${title}*\n${t(chatId, 'file_missing')}`, { parse_mode: 'Markdown' });
       }
     } else if (c.type === 'link') {
-      await bot.sendMessage(chatId, `🔗 *${c.title}*`, {
+      const linkTitle = title || text;
+      await bot.sendMessage(chatId, `🔗 *${linkTitle}*`, {
         parse_mode: 'Markdown',
-        reply_markup: { inline_keyboard: [[{ text: '🔗 ' + c.title, url: c.content }]] }
+        reply_markup: { inline_keyboard: [[{ text: '🔗 ' + linkTitle, url: text }]] }
       });
     }
   }
 
-  // Agar sub-menus hain to navigation dikhao
+  // Show sub-menu navigation
   if (subMenus.length > 0) {
-    const keyboard = buildKeyboard(subMenus, backData);
+    const keyboard = buildKeyboard(subMenus, backData, chatId);
+    const label = menuTitle(menu, chatId);
     if (msgId) {
       try {
-        await bot.editMessageText(menuLabel, { chat_id: chatId, message_id: msgId, reply_markup: keyboard });
+        await bot.editMessageText(label, { chat_id: chatId, message_id: msgId, reply_markup: keyboard });
       } catch (e) {
-        await bot.sendMessage(chatId, menuLabel, { reply_markup: keyboard });
+        await bot.sendMessage(chatId, label, { reply_markup: keyboard });
       }
     } else {
-      await bot.sendMessage(chatId, menuLabel, { reply_markup: keyboard });
+      await bot.sendMessage(chatId, label, { reply_markup: keyboard });
     }
-  } else if (!content.length) {
-    // Na content na sub-menu
-    const keyboard = { inline_keyboard: [[{ text: backData === 'home' ? '🏠 Main Menu' : '⬅️ Wapas', callback_data: backData }]] };
-    await bot.sendMessage(chatId, menuLabel + '\n\n_(Abhi koi content nahi hai)_', { parse_mode: 'Markdown', reply_markup: keyboard });
   } else {
-    // Content tha lekin sub-menus nahi — sirf back button
-    const keyboard = { inline_keyboard: [[{ text: backData === 'home' ? '🏠 Main Menu' : '⬅️ Wapas', callback_data: backData }]] };
-    await bot.sendMessage(chatId, menuLabel, { reply_markup: keyboard });
+    const backKeyboard = { inline_keyboard: [[{ text: backData === 'home' ? t(chatId, 'home_btn') : t(chatId, 'back_btn'), callback_data: backData }]] };
+    if (!content.length) {
+      await bot.sendMessage(chatId, menuTitle(menu, chatId) + '\n\n' + t(chatId, 'no_content'), {
+        parse_mode: 'Markdown', reply_markup: backKeyboard
+      });
+    } else {
+      await bot.sendMessage(chatId, menuTitle(menu, chatId), { reply_markup: backKeyboard });
+    }
   }
 }
 
@@ -134,7 +216,7 @@ bot.onText(/\/start/, async (msg) => {
 
   if (requireAuth) {
     userState[chatId] = { step: 'ask_reg' };
-    await bot.sendMessage(chatId, '🔐 Apna *Registration Number* darj karein:', { parse_mode: 'Markdown' });
+    await bot.sendMessage(chatId, t(chatId, 'ask_reg'), { parse_mode: 'Markdown' });
   } else {
     userState[chatId] = { step: 'done' };
     await showMainMenu(chatId, null);
@@ -142,7 +224,7 @@ bot.onText(/\/start/, async (msg) => {
 });
 
 // ============================================================
-// MESSAGE HANDLER (auth flow)
+// MESSAGE HANDLER
 // ============================================================
 bot.on('message', async (msg) => {
   if (msg.text && msg.text.startsWith('/')) return;
@@ -154,20 +236,16 @@ bot.on('message', async (msg) => {
 
   if (state.step === 'ask_reg') {
     const student = studentDatabase[text];
-    if (!student) {
-      return bot.sendMessage(chatId, '❌ Registration number galat hai.\n\nKripya sahi number darj karein:');
-    }
-    userState[chatId] = { step: 'ask_dob', reg: text, student };
-    return bot.sendMessage(chatId, `👤 *${student.name}* — Class ${student.class}\n\nAb apni *Date of Birth* darj karein (DD/MM/YYYY):`, { parse_mode: 'Markdown' });
+    if (!student) return bot.sendMessage(chatId, t(chatId, 'wrong_reg'));
+    userState[chatId] = { step: 'ask_dob', student };
+    return bot.sendMessage(chatId, t(chatId, 'ask_dob'), { parse_mode: 'Markdown' });
   }
 
   if (state.step === 'ask_dob') {
     const student = state.student;
-    if (text !== student.dob) {
-      return bot.sendMessage(chatId, '❌ Date of Birth galat hai.\n\nFormat: DD/MM/YYYY\nDobara try karein:');
-    }
+    if (text !== student.dob) return bot.sendMessage(chatId, t(chatId, 'wrong_dob'));
     userState[chatId] = { step: 'done', student };
-    await bot.sendMessage(chatId, `✅ Login safal!\n\n*Namaskar ${student.name}!*\nClass: ${student.class} | District: ${student.district}`, { parse_mode: 'Markdown' });
+    await bot.sendMessage(chatId, t(chatId, 'login_ok', { name: student.name, class: student.class, district: student.district }), { parse_mode: 'Markdown' });
     await showMainMenu(chatId, null);
     return;
   }
@@ -178,7 +256,7 @@ bot.on('message', async (msg) => {
 });
 
 // ============================================================
-// CALLBACK QUERY (menu navigation)
+// CALLBACK QUERY (menu navigation + language toggle)
 // ============================================================
 bot.on('callback_query', async (query) => {
   const chatId = query.message.chat.id;
@@ -186,6 +264,15 @@ bot.on('callback_query', async (query) => {
   const data = query.data;
 
   try {
+    if (data === 'lang') {
+      // Toggle language
+      const current = getLang(chatId);
+      userLang[chatId] = current === 'hi' ? 'en' : 'hi';
+      await bot.answerCallbackQuery(query.id, { text: t(chatId, 'lang_changed') });
+      await showMainMenu(chatId, msgId);
+      return;
+    }
+
     if (data === 'home') {
       await showMainMenu(chatId, msgId);
     } else if (data.startsWith('m:')) {
@@ -206,3 +293,4 @@ bot.on('polling_error', (err) => console.error('Polling error:', err.message));
 
 console.log('🤖 UPSOSB Bot chal raha hai...');
 console.log('📋 Menus database se live load honge');
+console.log('🌐 Hindi/English language toggle active hai');

@@ -50,12 +50,13 @@ module.exports = {
       .sort((a, b) => (a.order || 0) - (b.order || 0));
   },
 
-  addMenu({ parent_id, title, emoji, description }) {
+  addMenu({ parent_id, title, title_en, emoji, description }) {
     const store = readJSON('menus.json');
     const menu = {
       id: store.nextId++,
       parent_id: parent_id || null,
       title,
+      title_en: title_en || '',
       emoji: emoji || '',
       description: description || '',
       order: store.items.filter(m => m.parent_id === (parent_id || null)).length,
@@ -103,14 +104,16 @@ module.exports = {
       .sort((a, b) => (a.order || 0) - (b.order || 0));
   },
 
-  addContent({ menu_id, type, title, content, file_path }) {
+  addContent({ menu_id, type, title, title_en, content, content_en, file_path }) {
     const store = readJSON('content.json');
     const item = {
       id: store.nextId++,
       menu_id,
       type,
       title: title || '',
+      title_en: title_en || '',
       content: content || '',
+      content_en: content_en || '',
       file_path: file_path || '',
       order: store.items.filter(c => c.menu_id === menu_id).length
     };
