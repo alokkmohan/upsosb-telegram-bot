@@ -1,13 +1,17 @@
 {
   "name": "upsosb-telegram-bot",
-  "version": "2.0.0",
-  "description": "UPSOSB Educational Bot",
+  "version": "3.0.0",
+  "description": "UPSOSB Educational Bot with Admin Portal",
   "main": "telegram-bot.js",
   "scripts": {
-    "start": "node telegram-bot.js"
+    "start": "node server.js & node telegram-bot.js",
+    "bot": "node telegram-bot.js",
+    "admin": "node server.js"
   },
   "dependencies": {
-    "node-telegram-bot-api": "^0.66.0"
+    "node-telegram-bot-api": "^0.66.0",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1"
   },
   "engines": {
     "node": ">=18.0.0"

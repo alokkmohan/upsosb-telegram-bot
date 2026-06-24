@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bot Admin Portal</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#f1f5f9;display:flex;height:100vh;overflow:hidden;color:#1e293b}
+
+/* SIDEBAR */
+#sidebar{width:230px;background:#1e293b;color:#fff;display:flex;flex-direction:column;flex-shrink:0}
+.sb-header{padding:20px 16px;border-bottom:1px solid #334155}
+.sb-logo{display:flex;align-items:center;gap:10px}
+.sb-logo-img{width:36px;height:36px;border-radius:8px;object-fit:cover;background:#334155;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sb-bot-name{font-size:15px;font-weight:700;color:#f1f5f9}
+.sb-sub{font-size:11px;color:#64748b;margin-top:2px}
+.sb-nav{padding:12px 0;flex:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;color:#94a3b8;font-size:13px;border-left:3px solid transparent;transition:.15s}
+.nav-item:hover{background:#334155;color:#e2e8f0}
+.nav-item.active{background:#1e3a5f;color:#60a5fa;border-left-color:#60a5fa}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.page-title{font-size:18px;font-weight:600}
+.bot-badge{display:flex;align-items:center;gap:6px;font-size:12px;color:#16a34a;background:#dcfce7;padding:5px 10px;border-radius:20px}
+.dot{width:7px;height:7px;border-radius:50%;background:#16a34a}
+#content-area{flex:1;overflow-y:auto;padding:20px 24px}
+
+/* CARDS */
+.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.card-title{font-size:14px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.stat-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07);text-align:center}
+.stat-val{font-size:28px;font-weight:700;color:#1e40af}
+.stat-lbl{font-size:11px;color:#64748b;margin-top:4px}
+
+/* FORMS */
+.form-group{margin-bottom:14px}
+label{display:block;font-size:12px;font-weight:600;color:#374151;margin-bottom:5px}
+input[type=text],input[type=password],textarea,select{width:100%;padding:9px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;outline:none;transition:.15s}
+input:focus,textarea:focus,select:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+textarea{resize:vertical;min-height:80px}
+.help{font-size:11px;color:#94a3b8;margin-top:4px}
+
+/* BUTTONS */
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:5px;transition:.15s}
+.btn-primary{background:#3b82f6;color:#fff}.btn-primary:hover{background:#2563eb}
+.btn-success{background:#22c55e;color:#fff}.btn-success:hover{background:#16a34a}
+.btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-secondary{background:#f8fafc;color:#475569;border:1px solid #e2e8f0}.btn-secondary:hover{background:#f1f5f9}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:6px}
+
+/* LOGO UPLOAD */
+.logo-wrap{display:flex;align-items:flex-start;gap:16px;margin-bottom:14px}
+.logo-box{width:90px;height:90px;border-radius:12px;border:2px dashed #d1d5db;cursor:pointer;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#f8fafc;transition:.2s}
+.logo-box:hover{border-color:#3b82f6;background:#eff6ff}
+.logo-box img{width:100%;height:100%;object-fit:cover}
+.logo-placeholder{color:#94a3b8;font-size:11px;text-align:center;padding:8px}
+
+/* TOGGLE */
+.toggle-wrap{display:flex;align-items:center;gap:10px}
+.toggle{width:42px;height:24px;background:#d1d5db;border-radius:12px;cursor:pointer;transition:.2s;position:relative;flex-shrink:0}
+.toggle.on{background:#3b82f6}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:3px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{left:21px}
+.toggle-label{font-size:13px;color:#374151}
+
+/* MENU TREE */
+.tree-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.menu-tree{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+.menu-node{}
+.menu-row{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#fff;border-bottom:1px solid #f8fafc;transition:.1s}
+.menu-row:hover{background:#fafafa}
+.toggle-btn{width:18px;height:18px;cursor:pointer;color:#94a3b8;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.m-emoji{font-size:16px;flex-shrink:0}
+.m-title{flex:1;font-size:13px;font-weight:500}
+.m-desc{font-size:11px;color:#94a3b8}
+.m-actions{display:flex;gap:5px;opacity:0;transition:.15s}
+.menu-row:hover .m-actions{opacity:1}
+.submenu-wrap{border-left:3px solid #e2e8f0;margin-left:30px}
+.empty-state{text-align:center;padding:40px;color:#94a3b8}
+.empty-icon{font-size:42px;margin-bottom:10px}
+.empty-text{font-size:14px}
+
+/* CONTENT ITEMS */
+.content-list{display:flex;flex-direction:column;gap:8px}
+.content-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e8f0fe;border-radius:8px;background:#fafbff}
+.badge{padding:3px 7px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;flex-shrink:0}
+.badge-text{background:#dbeafe;color:#1e40af}
+.badge-pdf{background:#fee2e2;color:#991b1b}
+.badge-link{background:#d1fae5;color:#065f46}
+.c-title{flex:1;font-size:13px;color:#334155}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:1000}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:16px;padding:24px;width:480px;max-width:92vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-title{font-size:17px;font-weight:600;margin-bottom:18px}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+
+/* TABS */
+.tabs{display:flex;background:#f1f5f9;padding:3px;border-radius:8px;gap:3px;margin-bottom:14px}
+.tab{flex:1;padding:7px;border:none;background:transparent;border-radius:6px;cursor:pointer;font-size:12px;color:#64748b;transition:.15s}
+.tab.active{background:#fff;color:#1e293b;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
+/* UPLOAD */
+.upload-zone{border:2px dashed #d1d5db;border-radius:8px;padding:20px;text-align:center;cursor:pointer;color:#64748b;font-size:13px;transition:.2s}
+.upload-zone:hover{border-color:#3b82f6;background:#eff6ff;color:#2563eb}
+.file-chosen{font-size:12px;color:#16a34a;margin-top:6px}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:#1e293b;color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;z-index:9999;display:none;box-shadow:0 4px 15px rgba(0,0,0,.2)}
+.toast.show{display:block}
+
+.section{display:none}.section.active{display:block}
+.row{display:flex;gap:12px}.row .btn{flex:0 0 auto}
+.divider{height:1px;background:#f1f5f9;margin:16px 0}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-header">
+    <div class="sb-logo">
+      <div class="sb-logo-img" id="sb-logo-el">🤖</div>
+      <div>
+        <div class="sb-bot-name" id="sb-bot-name">Loading...</div>
+        <div class="sb-sub">Admin Portal</div>
+      </div>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="nav-item active" onclick="showSection('dashboard')"><span class="nav-icon">📊</span> Dashboard</div>
+    <div class="nav-item" onclick="showSection('settings')"><span class="nav-icon">⚙️</span> Bot Settings</div>
+    <div class="nav-item" onclick="showSection('menus')"><span class="nav-icon">📋</span> Menu Manager</div>
+  </nav>
+</div>
+
+<div id="main">
+  <div id="topbar">
+    <div class="page-title" id="page-title">Dashboard</div>
+    <div class="bot-badge"><span class="dot"></span> Bot Active</div>
+  </div>
+  <div id="content-area">
+
+    <!-- DASHBOARD -->
+    <div id="section-dashboard" class="section active">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-val" id="s-menus">-</div><div class="stat-lbl">Main Menus</div></div>
+        <div class="stat-card"><div class="stat-val" id="s-sub">-</div><div class="stat-lbl">Sub Menus</div></div>
+        <div class="stat-card"><div class="stat-val" id="s-content">-</div><div class="stat-lbl">Content Items</div></div>
+        <div class="stat-card"><div class="stat-val" id="s-pdf">-</div><div class="stat-lbl">PDF Files</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Quick Actions</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="showSection('menus');openAddMenu(null)">➕ Add Menu</button>
+          <button class="btn btn-secondary" onclick="showSection('settings')">⚙️ Bot Settings</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Bot mein changes kaise dikhenge?</div>
+        <p style="font-size:13px;color:#475569;line-height:1.7">
+          ✅ Portal mein koi bhi menu add/edit/delete karo — bot turant reflect karega.<br>
+          ✅ Welcome message badlo — /start par naya message dikhega.<br>
+          ✅ Logo upload karo — sidebar mein dikhai dega.<br>
+          ✅ Kisi bhi badlav ke liye bot restart ki zaroorat nahi.
+        </p>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="section-settings" class="section">
+      <div class="card">
+        <div class="card-title">🤖 Bot Identity</div>
+        <div class="form-group">
+          <label>Bot Ka Naam</label>
+          <input type="text" id="s-name" placeholder="e.g. UPSOSB Educational Bot">
+        </div>
+        <div class="form-group">
+          <label>Welcome Message (/start par dikhega)</label>
+          <textarea id="s-welcome" rows="4" placeholder="Namaskar! Bot mein aapka swagat hai..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Login Zaroori Hai?</label>
+          <div class="toggle-wrap">
+            <div class="toggle" id="auth-toggle" onclick="toggleAuth()"></div>
+            <span class="toggle-label" id="auth-label">Nahi — koi bhi seedha menus dekh sakta hai</span>
+          </div>
+          <p class="help">OFF rakho to user bina login ke menus dekh sakta hai. ON karo to pehle registration number + DOB maanga jayega.</p>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()">💾 Settings Save Karo</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🖼️ Bot Logo</div>
+        <div class="logo-wrap">
+          <div class="logo-box" id="logo-box" onclick="document.getElementById('logo-input').click()">
+            <div class="logo-placeholder">📷<br>Upload<br>Logo</div>
+          </div>
+          <div>
+            <p style="font-size:13px;color:#475569;margin-bottom:8px">Logo upload karo — sidebar aur bot mein dikhega.</p>
+            <p class="help">Recommended: 512×512 PNG ya JPG</p>
+            <button class="btn btn-secondary" style="margin-top:10px" onclick="document.getElementById('logo-input').click()">📁 File Chunein</button>
+          </div>
+        </div>
+        <input type="file" id="logo-input" accept="image/*" style="display:none" onchange="uploadLogo(this)">
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔐 Admin Password</div>
+        <div class="form-group">
+          <label>Naya Password</label>
+          <input type="password" id="s-pwd" placeholder="Naya password likhein">
+        </div>
+        <button class="btn btn-secondary" onclick="savePassword()">🔑 Password Badlo</button>
+      </div>
+    </div>
+
+    <!-- MENU MANAGER -->
+    <div id="section-menus" class="section">
+      <div class="tree-header">
+        <span style="font-size:15px;font-weight:600">Menu Structure</span>
+        <button class="btn btn-primary" onclick="openAddMenu(null)">➕ Root Menu Add Karo</button>
+      </div>
+      <div class="menu-tree" id="menu-tree">
+        <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Koi menu nahi hai.<br>"Root Menu Add Karo" dabao.</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ADD/EDIT MENU MODAL -->
+<div class="modal-bg" id="menu-modal">
+  <div class="modal">
+    <div class="modal-title" id="mm-title">Menu Add Karo</div>
+    <input type="hidden" id="mm-id">
+    <input type="hidden" id="mm-parent">
+    <div class="form-group">
+      <label>Emoji (optional)</label>
+      <input type="text" id="mm-emoji" placeholder="e.g. 📚 🔢 📄">
+    </div>
+    <div class="form-group">
+      <label>Menu Title *</label>
+      <input type="text" id="mm-title-in" placeholder="e.g. Study Material">
+    </div>
+    <div class="form-group">
+      <label>Description (optional)</label>
+      <textarea id="mm-desc" rows="2" placeholder="Chhota description..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('menu-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMenu()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT MODAL -->
+<div class="modal-bg" id="content-modal">
+  <div class="modal">
+    <div class="modal-title" id="cm-title">Content Add Karo</div>
+    <input type="hidden" id="cm-menu-id">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('text')">📝 Text</button>
+      <button class="tab" onclick="switchTab('pdf')">📄 PDF</button>
+      <button class="tab" onclick="switchTab('link')">🔗 Link</button>
+    </div>
+    <div id="tab-text">
+      <div class="form-group"><label>Title (optional)</label><input type="text" id="ct-title-text" placeholder="e.g. Important Notes"></div>
+      <div class="form-group"><label>Message *</label><textarea id="ct-text" rows="5" placeholder="Yahan apna message likhein..."></textarea></div>
+    </div>
+    <div id="tab-pdf" style="display:none">
+      <div class="form-group"><label>Title (optional)</label><input type="text" id="ct-title-pdf" placeholder="e.g. Chapter 1 PDF"></div>
+      <div class="upload-zone" onclick="document.getElementById('pdf-input').click()">
+        📄 PDF file chunne ke liye yahan click karein
+        <div class="file-chosen" id="pdf-name"></div>
+      </div>
+      <input type="file" id="pdf-input" accept=".pdf" style="display:none" onchange="document.getElementById('pdf-name').textContent=this.files[0]?.name||''">
+    </div>
+    <div id="tab-link" style="display:none">
+      <div class="form-group"><label>Button Label *</label><input type="text" id="ct-title-link" placeholder="e.g. Official Website"></div>
+      <div class="form-group"><label>URL *</label><input type="text" id="ct-url" placeholder="https://..."></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('content-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveContent()">Add Karo</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW CONTENT MODAL -->
+<div class="modal-bg" id="view-modal">
+  <div class="modal" style="width:560px">
+    <div class="modal-title" id="vm-title">Content</div>
+    <div id="vm-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('view-modal')">Bandh Karo</button>
+      <button class="btn btn-primary" id="vm-add-btn">➕ Content Add Karo</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let allMenus = [];
+let settings = {};
+let currentTab = 'text';
+
+async function init() {
+  await loadSettings();
+  await loadStats();
+}
+
+// ---- NAVIGATION ----
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  const navIdx = ['dashboard','settings','menus'].indexOf(name);
+  document.querySelectorAll('.nav-item')[navIdx].classList.add('active');
+  document.getElementById('page-title').textContent = {dashboard:'Dashboard',settings:'Bot Settings',menus:'Menu Manager'}[name];
+  if (name === 'menus') loadMenuTree();
+  if (name === 'dashboard') loadStats();
+}
+
+// ---- SETTINGS ----
+async function loadSettings() {
+  const r = await fetch('/api/settings');
+  settings = await r.json();
+  document.getElementById('s-name').value = settings.bot_name || '';
+  document.getElementById('s-welcome').value = settings.welcome_message || '';
+  document.getElementById('sb-bot-name').textContent = settings.bot_name || 'Bot';
+  const authOn = settings.require_auth === true || settings.require_auth === 'true';
+  setAuthToggle(authOn);
+  if (settings.logo_path) {
+    document.getElementById('logo-box').innerHTML = `<img src="${settings.logo_path}">`;
+    const sbLogo = document.getElementById('sb-logo-el');
+    sbLogo.innerHTML = `<img src="${settings.logo_path}" style="width:36px;height:36px;border-radius:8px;object-fit:cover">`;
+  }
+}
+
+function setAuthToggle(on) {
+  const t = document.getElementById('auth-toggle');
+  const l = document.getElementById('auth-label');
+  if (on) { t.classList.add('on'); l.textContent = 'Haan — pehle registration + DOB maanga jayega'; }
+  else { t.classList.remove('on'); l.textContent = 'Nahi — koi bhi seedha menus dekh sakta hai'; }
+  settings.require_auth = on;
+}
+
+function toggleAuth() {
+  const on = document.getElementById('auth-toggle').classList.contains('on');
+  setAuthToggle(!on);
+}
+
+async function saveSettings() {
+  const name = document.getElementById('s-name').value.trim();
+  const welcome = document.getElementById('s-welcome').value.trim();
+  if (!name) return toast('Bot naam zaroori hai!', true);
+  await api('/api/settings', 'POST', {key:'bot_name', value:name});
+  await api('/api/settings', 'POST', {key:'welcome_message', value:welcome});
+  await api('/api/settings', 'POST', {key:'require_auth', value: settings.require_auth});
+  document.getElementById('sb-bot-name').textContent = name;
+  toast('Settings save ho gayi!');
+}
+
+async function savePassword() {
+  const pwd = document.getElementById('s-pwd').value.trim();
+  if (!pwd) return toast('Password khali nahi ho sakta!', true);
+  await api('/api/settings', 'POST', {key:'admin_password', value:pwd});
+  document.getElementById('s-pwd').value = '';
+  toast('Password badal gaya!');
+}
+
+async function uploadLogo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('logo', file);
+  const r = await fetch('/api/settings/logo', {method:'POST', body:fd});
+  const d = await r.json();
+  if (d.url) {
+    document.getElementById('logo-box').innerHTML = `<img src="${d.url}">`;
+    const sbLogo = document.getElementById('sb-logo-el');
+    sbLogo.innerHTML = `<img src="${d.url}" style="width:36px;height:36px;border-radius:8px;object-fit:cover">`;
+    toast('Logo upload ho gaya!');
+  }
+}
+
+// ---- STATS ----
+async function loadStats() {
+  const r = await fetch('/api/stats');
+  const d = await r.json();
+  document.getElementById('s-menus').textContent = d.total_menus;
+  document.getElementById('s-sub').textContent = d.sub_menus;
+  document.getElementById('s-content').textContent = d.total_content;
+  document.getElementById('s-pdf').textContent = d.pdf_count;
+}
+
+// ---- MENU TREE ----
+async function loadMenuTree() {
+  const r = await fetch('/api/menus');
+  allMenus = await r.json();
+  renderTree();
+}
+
+function renderTree() {
+  const roots = allMenus.filter(m => !m.parent_id);
+  const el = document.getElementById('menu-tree');
+  if (!roots.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Koi menu nahi hai.<br>"Root Menu Add Karo" dabao.</div></div>';
+    return;
+  }
+  el.innerHTML = roots.map(m => renderNode(m, 0)).join('');
+}
+
+function renderNode(menu, depth) {
+  const children = allMenus.filter(m => m.parent_id === menu.id);
+  const pl = 14 + depth * 24;
+  const t = menu.title.replace(/'/g,"\\'");
+  const e = (menu.emoji || '').replace(/'/g,"\\'");
+  return `<div class="menu-node" id="mn-${menu.id}">
+    <div class="menu-row" style="padding-left:${pl}px">
+      <div class="toggle-btn" onclick="toggleNode(${menu.id})">${children.length ? '▶' : '◦'}</div>
+      <span class="m-emoji">${menu.emoji || '📌'}</span>
+      <div class="m-title">${menu.title}${menu.description?`<div class="m-desc">${menu.description}</div>`:''}</div>
+      <div class="m-actions">
+        <button class="btn btn-secondary btn-sm" onclick="viewContent(${menu.id},'${e} ${t}')">📄 Content</button>
+        <button class="btn btn-secondary btn-sm" onclick="openAddMenu(${menu.id})">➕ Sub</button>
+        <button class="btn btn-secondary btn-sm" onclick="openEditMenu(${menu.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="delMenu(${menu.id},'${t}')">🗑️</button>
+      </div>
+    </div>
+    <div class="submenu-wrap" id="sw-${menu.id}" style="display:none">
+      ${children.length ? children.map(c => renderNode(c, depth+1)).join('') : '<div style="padding:8px 16px;font-size:11px;color:#94a3b8">Sub-menu nahi hai</div>'}
+    </div>
+  </div>`;
+}
+
+function toggleNode(id) {
+  const sw = document.getElementById('sw-'+id);
+  const tb = sw.previousElementSibling.querySelector('.toggle-btn');
+  if (sw.style.display === 'none') { sw.style.display='block'; tb.textContent='▼'; }
+  else { sw.style.display='none'; tb.textContent='▶'; }
+}
+
+// ---- ADD/EDIT MENU ----
+function openAddMenu(parentId) {
+  document.getElementById('mm-title').textContent = parentId ? 'Sub-Menu Add Karo' : 'Root Menu Add Karo';
+  document.getElementById('mm-id').value = '';
+  document.getElementById('mm-parent').value = parentId || '';
+  document.getElementById('mm-emoji').value = '';
+  document.getElementById('mm-title-in').value = '';
+  document.getElementById('mm-desc').value = '';
+  openModal('menu-modal');
+}
+
+function openEditMenu(id) {
+  const m = allMenus.find(x => x.id === id);
+  if (!m) return;
+  document.getElementById('mm-title').textContent = 'Menu Edit Karo';
+  document.getElementById('mm-id').value = id;
+  document.getElementById('mm-parent').value = m.parent_id || '';
+  document.getElementById('mm-emoji').value = m.emoji || '';
+  document.getElementById('mm-title-in').value = m.title;
+  document.getElementById('mm-desc').value = m.description || '';
+  openModal('menu-modal');
+}
+
+async function saveMenu() {
+  const id = document.getElementById('mm-id').value;
+  const parentId = document.getElementById('mm-parent').value;
+  const title = document.getElementById('mm-title-in').value.trim();
+  const emoji = document.getElementById('mm-emoji').value.trim();
+  const desc = document.getElementById('mm-desc').value.trim();
+  if (!title) return toast('Title zaroori hai!', true);
+  if (id) {
+    await api(`/api/menus/${id}`, 'PUT', {title, emoji, description:desc, active:true});
+    toast('Menu update ho gaya!');
+  } else {
+    await api('/api/menus', 'POST', {parent_id: parentId || null, title, emoji, description:desc});
+    toast('Menu add ho gaya!');
+  }
+  closeModal('menu-modal');
+  await loadMenuTree();
+}
+
+async function delMenu(id, title) {
+  if (!confirm(`"${title}" aur uske sare sub-menus aur content delete honge. Pakka?`)) return;
+  await api(`/api/menus/${id}`, 'DELETE');
+  toast('Menu delete ho gaya!');
+  await loadMenuTree();
+}
+
+// ---- CONTENT ----
+async function viewContent(menuId, menuTitle) {
+  document.getElementById('vm-title').textContent = menuTitle;
+  const items = await (await fetch(`/api/menus/${menuId}/content`)).json();
+  const body = document.getElementById('vm-body');
+  if (!items.length) {
+    body.innerHTML = '<div class="empty-state" style="padding:24px"><div class="empty-icon">📂</div><div class="empty-text">Koi content nahi hai abhi.</div></div>';
+  } else {
+    body.innerHTML = `<div class="content-list">${items.map(c => `
+      <div class="content-item">
+        <span class="badge badge-${c.type}">${c.type.toUpperCase()}</span>
+        <span class="c-title">${c.title || (c.type==='text'?c.content.substring(0,60):c.file_path.split('/').pop()) || '—'}</span>
+        ${c.type==='link'?`<a href="${c.content}" target="_blank" class="btn btn-secondary btn-sm">🔗</a>`:''}
+        ${c.type==='pdf'&&c.file_path?`<a href="${c.file_path}" target="_blank" class="btn btn-secondary btn-sm">👁️</a>`:''}
+        <button class="btn btn-danger btn-sm" onclick="delContent(${c.id},${menuId},'${menuTitle.replace(/'/g,"\\'")}')">🗑️</button>
+      </div>`).join('')}</div>`;
+  }
+  document.getElementById('vm-add-btn').onclick = () => { closeModal('view-modal'); openContentModal(menuId, menuTitle); };
+  openModal('view-modal');
+}
+
+function openContentModal(menuId, menuTitle) {
+  document.getElementById('cm-title').textContent = menuTitle + ' — Content Add';
+  document.getElementById('cm-menu-id').value = menuId;
+  document.getElementById('ct-title-text').value = '';
+  document.getElementById('ct-text').value = '';
+  document.getElementById('ct-title-pdf').value = '';
+  document.getElementById('ct-title-link').value = '';
+  document.getElementById('ct-url').value = '';
+  document.getElementById('pdf-name').textContent = '';
+  document.getElementById('pdf-input').value = '';
+  switchTab('text');
+  openModal('content-modal');
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  ['text','pdf','link'].forEach((t,i) => {
+    document.getElementById('tab-'+t).style.display = t===tab?'block':'none';
+    document.querySelectorAll('.tab')[i].classList.toggle('active', t===tab);
+  });
+}
+
+async function saveContent() {
+  const menuId = document.getElementById('cm-menu-id').value;
+  const fd = new FormData();
+  fd.append('type', currentTab);
+  if (currentTab === 'text') {
+    const content = document.getElementById('ct-text').value.trim();
+    if (!content) return toast('Text likhna zaroori hai!', true);
+    fd.append('title', document.getElementById('ct-title-text').value.trim());
+    fd.append('content', content);
+  } else if (currentTab === 'pdf') {
+    const file = document.getElementById('pdf-input').files[0];
+    if (!file) return toast('PDF file chunna zaroori hai!', true);
+    fd.append('title', document.getElementById('ct-title-pdf').value.trim() || file.name);
+    fd.append('pdf', file);
+  } else {
+    const url = document.getElementById('ct-url').value.trim();
+    const title = document.getElementById('ct-title-link').value.trim();
+    if (!url || !title) return toast('Label aur URL dono zaroori hain!', true);
+    fd.append('title', title);
+    fd.append('content', url);
+  }
+  const r = await fetch(`/api/menus/${menuId}/content`, {method:'POST', body:fd});
+  const d = await r.json();
+  if (d.ok) { toast('Content add ho gaya!'); closeModal('content-modal'); }
+}
+
+async function delContent(id, menuId, menuTitle) {
+  if (!confirm('Yeh content delete karna chahte ho?')) return;
+  await api(`/api/content/${id}`, 'DELETE');
+  toast('Delete ho gaya!');
+  viewContent(menuId, menuTitle);
+}
+
+// ---- HELPERS ----
+async function api(url, method, body) {
+  return fetch(url, {method, headers:{'Content-Type':'application/json'}, body: body ? JSON.stringify(body) : undefined});
+}
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+document.querySelectorAll('.modal-bg').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('show'); });
+});
+function toast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = (err?'❌ ':'✅ ') + msg;
+  t.style.background = err ? '#dc2626' : '#1e293b';
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+init();
+</script>
+</body>
+</html>

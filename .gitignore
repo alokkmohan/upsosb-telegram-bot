@@ -31,3 +31,7 @@ temp/
 # Backup files
 *.bak
 *~
+
+# Runtime data (server par locally save hoga, GitHub par nahi)
+data/
+uploads/
