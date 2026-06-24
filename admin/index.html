@@ -183,8 +183,12 @@ textarea{resize:vertical;min-height:80px}
           <input type="text" id="s-name" placeholder="e.g. UPSOSB Educational Bot">
         </div>
         <div class="form-group">
-          <label>Welcome Message (/start par dikhega)</label>
-          <textarea id="s-welcome" rows="4" placeholder="Namaskar! Bot mein aapka swagat hai..."></textarea>
+          <label>🇮🇳 Welcome Message — हिंदी (/start par dikhega)</label>
+          <textarea id="s-welcome" rows="3" placeholder="🙏 नमस्कार! UPSOSB बॉट में आपका स्वागत है।"></textarea>
+        </div>
+        <div class="form-group">
+          <label>🇬🇧 Welcome Message — English (/start par English users ke liye)</label>
+          <textarea id="s-welcome-en" rows="3" placeholder="🙏 Welcome to UPSOSB Bot!"></textarea>
         </div>
         <div class="form-group">
           <label>Login Zaroori Hai?</label>
@@ -247,8 +251,13 @@ textarea{resize:vertical;min-height:80px}
       <input type="text" id="mm-emoji" placeholder="e.g. 📚 🔢 📄">
     </div>
     <div class="form-group">
-      <label>Menu Title *</label>
-      <input type="text" id="mm-title-in" placeholder="e.g. Study Material">
+      <label>🇮🇳 Menu Title — हिंदी *</label>
+      <input type="text" id="mm-title-in" placeholder="e.g. अध्ययन सामग्री">
+    </div>
+    <div class="form-group">
+      <label>🇬🇧 Menu Title — English</label>
+      <input type="text" id="mm-title-en" placeholder="e.g. Study Material">
+      <p class="help">Khali chodne par Hindi title hi dikhega dono languages mein</p>
     </div>
     <div class="form-group">
       <label>Description (optional)</label>
@@ -272,11 +281,33 @@ textarea{resize:vertical;min-height:80px}
       <button class="tab" onclick="switchTab('link')">🔗 Link</button>
     </div>
     <div id="tab-text">
-      <div class="form-group"><label>Title (optional)</label><input type="text" id="ct-title-text" placeholder="e.g. Important Notes"></div>
-      <div class="form-group"><label>Message *</label><textarea id="ct-text" rows="5" placeholder="Yahan apna message likhein..."></textarea></div>
+      <div class="form-group">
+        <label>🇮🇳 Title — हिंदी (optional)</label>
+        <input type="text" id="ct-title-text" placeholder="e.g. महत्वपूर्ण जानकारी">
+      </div>
+      <div class="form-group">
+        <label>🇮🇳 Message — हिंदी *</label>
+        <textarea id="ct-text" rows="4" placeholder="यहाँ हिंदी में लिखें..."></textarea>
+      </div>
+      <div style="height:1px;background:#f1f5f9;margin:10px 0"></div>
+      <div class="form-group">
+        <label>🇬🇧 Title — English (optional)</label>
+        <input type="text" id="ct-title-en" placeholder="e.g. Important Information">
+      </div>
+      <div class="form-group">
+        <label>🇬🇧 Message — English (optional)</label>
+        <textarea id="ct-text-en" rows="4" placeholder="Write in English here... (khali chodne par Hindi content dikhega)"></textarea>
+      </div>
     </div>
     <div id="tab-pdf" style="display:none">
-      <div class="form-group"><label>Title (optional)</label><input type="text" id="ct-title-pdf" placeholder="e.g. Chapter 1 PDF"></div>
+      <div class="form-group">
+        <label>🇮🇳 Title — हिंदी (optional)</label>
+        <input type="text" id="ct-title-pdf" placeholder="e.g. अध्याय 1 PDF">
+      </div>
+      <div class="form-group">
+        <label>🇬🇧 Title — English (optional)</label>
+        <input type="text" id="ct-title-pdf-en" placeholder="e.g. Chapter 1 PDF">
+      </div>
       <div class="upload-zone" onclick="document.getElementById('pdf-input').click()">
         📄 PDF file chunne ke liye yahan click karein
         <div class="file-chosen" id="pdf-name"></div>
@@ -284,8 +315,18 @@ textarea{resize:vertical;min-height:80px}
       <input type="file" id="pdf-input" accept=".pdf" style="display:none" onchange="document.getElementById('pdf-name').textContent=this.files[0]?.name||''">
     </div>
     <div id="tab-link" style="display:none">
-      <div class="form-group"><label>Button Label *</label><input type="text" id="ct-title-link" placeholder="e.g. Official Website"></div>
-      <div class="form-group"><label>URL *</label><input type="text" id="ct-url" placeholder="https://..."></div>
+      <div class="form-group">
+        <label>🇮🇳 Button Label — हिंदी *</label>
+        <input type="text" id="ct-title-link" placeholder="e.g. आधिकारिक वेबसाइट">
+      </div>
+      <div class="form-group">
+        <label>🇬🇧 Button Label — English (optional)</label>
+        <input type="text" id="ct-title-link-en" placeholder="e.g. Official Website">
+      </div>
+      <div class="form-group">
+        <label>URL *</label>
+        <input type="text" id="ct-url" placeholder="https://...">
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('content-modal')">Cancel</button>
@@ -336,6 +377,7 @@ async function loadSettings() {
   settings = await r.json();
   document.getElementById('s-name').value = settings.bot_name || '';
   document.getElementById('s-welcome').value = settings.welcome_message || '';
+  document.getElementById('s-welcome-en').value = settings.welcome_message_en || '';
   document.getElementById('sb-bot-name').textContent = settings.bot_name || 'Bot';
   const authOn = settings.require_auth === true || settings.require_auth === 'true';
   setAuthToggle(authOn);
@@ -363,8 +405,10 @@ async function saveSettings() {
   const name = document.getElementById('s-name').value.trim();
   const welcome = document.getElementById('s-welcome').value.trim();
   if (!name) return toast('Bot naam zaroori hai!', true);
+  const welcomeEn = document.getElementById('s-welcome-en').value.trim();
   await api('/api/settings', 'POST', {key:'bot_name', value:name});
   await api('/api/settings', 'POST', {key:'welcome_message', value:welcome});
+  await api('/api/settings', 'POST', {key:'welcome_message_en', value:welcomeEn});
   await api('/api/settings', 'POST', {key:'require_auth', value: settings.require_auth});
   document.getElementById('sb-bot-name').textContent = name;
   toast('Settings save ho gayi!');
@@ -457,6 +501,7 @@ function openAddMenu(parentId) {
   document.getElementById('mm-parent').value = parentId || '';
   document.getElementById('mm-emoji').value = '';
   document.getElementById('mm-title-in').value = '';
+  document.getElementById('mm-title-en').value = '';
   document.getElementById('mm-desc').value = '';
   openModal('menu-modal');
 }
@@ -469,6 +514,7 @@ function openEditMenu(id) {
   document.getElementById('mm-parent').value = m.parent_id || '';
   document.getElementById('mm-emoji').value = m.emoji || '';
   document.getElementById('mm-title-in').value = m.title;
+  document.getElementById('mm-title-en').value = m.title_en || '';
   document.getElementById('mm-desc').value = m.description || '';
   openModal('menu-modal');
 }
@@ -477,14 +523,15 @@ async function saveMenu() {
   const id = document.getElementById('mm-id').value;
   const parentId = document.getElementById('mm-parent').value;
   const title = document.getElementById('mm-title-in').value.trim();
+  const title_en = document.getElementById('mm-title-en').value.trim();
   const emoji = document.getElementById('mm-emoji').value.trim();
   const desc = document.getElementById('mm-desc').value.trim();
-  if (!title) return toast('Title zaroori hai!', true);
+  if (!title) return toast('Hindi title zaroori hai!', true);
   if (id) {
-    await api(`/api/menus/${id}`, 'PUT', {title, emoji, description:desc, active:true});
+    await api(`/api/menus/${id}`, 'PUT', {title, title_en, emoji, description:desc, active:true});
     toast('Menu update ho gaya!');
   } else {
-    await api('/api/menus', 'POST', {parent_id: parentId || null, title, emoji, description:desc});
+    await api('/api/menus', 'POST', {parent_id: parentId || null, title, title_en, emoji, description:desc});
     toast('Menu add ho gaya!');
   }
   closeModal('menu-modal');
@@ -524,8 +571,12 @@ function openContentModal(menuId, menuTitle) {
   document.getElementById('cm-menu-id').value = menuId;
   document.getElementById('ct-title-text').value = '';
   document.getElementById('ct-text').value = '';
+  document.getElementById('ct-title-en').value = '';
+  document.getElementById('ct-text-en').value = '';
   document.getElementById('ct-title-pdf').value = '';
+  document.getElementById('ct-title-pdf-en').value = '';
   document.getElementById('ct-title-link').value = '';
+  document.getElementById('ct-title-link-en').value = '';
   document.getElementById('ct-url').value = '';
   document.getElementById('pdf-name').textContent = '';
   document.getElementById('pdf-input').value = '';
@@ -547,19 +598,23 @@ async function saveContent() {
   fd.append('type', currentTab);
   if (currentTab === 'text') {
     const content = document.getElementById('ct-text').value.trim();
-    if (!content) return toast('Text likhna zaroori hai!', true);
+    if (!content) return toast('Hindi text likhna zaroori hai!', true);
     fd.append('title', document.getElementById('ct-title-text').value.trim());
+    fd.append('title_en', document.getElementById('ct-title-en').value.trim());
     fd.append('content', content);
+    fd.append('content_en', document.getElementById('ct-text-en').value.trim());
   } else if (currentTab === 'pdf') {
     const file = document.getElementById('pdf-input').files[0];
     if (!file) return toast('PDF file chunna zaroori hai!', true);
     fd.append('title', document.getElementById('ct-title-pdf').value.trim() || file.name);
+    fd.append('title_en', document.getElementById('ct-title-pdf-en').value.trim());
     fd.append('pdf', file);
   } else {
     const url = document.getElementById('ct-url').value.trim();
     const title = document.getElementById('ct-title-link').value.trim();
-    if (!url || !title) return toast('Label aur URL dono zaroori hain!', true);
+    if (!url || !title) return toast('Hindi label aur URL dono zaroori hain!', true);
     fd.append('title', title);
+    fd.append('title_en', document.getElementById('ct-title-link-en').value.trim());
     fd.append('content', url);
   }
   const r = await fetch(`/api/menus/${menuId}/content`, {method:'POST', body:fd});

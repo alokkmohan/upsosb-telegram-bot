@@ -70,10 +70,10 @@ app.get('/api/menus/:id/content', (req, res) => {
 
 app.post('/api/menus/:id/content', upload.single('pdf'), (req, res) => {
   const menuId = parseInt(req.params.id);
-  const { type, title, content } = req.body;
+  const { type, title, title_en, content, content_en } = req.body;
   let file_path = '';
   if (req.file) file_path = 'uploads/pdfs/' + req.file.filename;
-  const item = db.addContent({ menu_id: menuId, type, title, content: content || '', file_path });
+  const item = db.addContent({ menu_id: menuId, type, title, title_en: title_en || '', content: content || '', content_en: content_en || '', file_path });
   res.json({ ok: true, item });
 });
 
