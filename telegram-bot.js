@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 
 // Bot Token from @BotFather
-const token = '8557217217:AAHwgY6QgFyuCF4Nz1ylIqz0-_JOUmxZmoU';
+const token = process.env.BOT_TOKEN || '8557217217:AAHwgY6QgFyuCF4Nz1ylIqz0-_JOUmxZmoU';
 
 // Bot configuration with better timeout handling
 const bot = new TelegramBot(token, { 
