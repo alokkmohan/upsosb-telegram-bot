@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -164,12 +164,12 @@ textarea{resize:vertical;min-height:80px}
         </div>
       </div>
       <div class="card">
-        <div class="card-title">Bot mein changes kaise dikhenge?</div>
+        <div class="card-title">How do changes appear in the bot?</div>
         <p style="font-size:13px;color:#475569;line-height:1.7">
-          ✅ Portal mein koi bhi menu add/edit/delete karo — bot turant reflect karega.<br>
-          ✅ Welcome message badlo — /start par naya message dikhega.<br>
-          ✅ Logo upload karo — sidebar mein dikhai dega.<br>
-          ✅ Kisi bhi badlav ke liye bot restart ki zaroorat nahi.
+          ✅ Add, edit or delete any menu — the bot reflects it instantly.<br>
+          ✅ Update the welcome message — shown on /start immediately.<br>
+          ✅ Upload a new logo — visible in sidebar and bot.<br>
+          ✅ No bot restart needed for any change.
         </p>
       </div>
     </div>
@@ -179,26 +179,26 @@ textarea{resize:vertical;min-height:80px}
       <div class="card">
         <div class="card-title">🤖 Bot Identity</div>
         <div class="form-group">
-          <label>Bot Ka Naam</label>
+          <label>Bot Name</label>
           <input type="text" id="s-name" placeholder="e.g. UPSOSB Educational Bot">
         </div>
         <div class="form-group">
-          <label>🇮🇳 Welcome Message — हिंदी (/start par dikhega)</label>
+          <label>🇮🇳 Welcome Message — Hindi (shown on /start)</label>
           <textarea id="s-welcome" rows="3" placeholder="🙏 नमस्कार! UPSOSB बॉट में आपका स्वागत है।"></textarea>
         </div>
         <div class="form-group">
-          <label>🇬🇧 Welcome Message — English (/start par English users ke liye)</label>
+          <label>🇬🇧 Welcome Message — English (shown when user switches to English)</label>
           <textarea id="s-welcome-en" rows="3" placeholder="🙏 Welcome to UPSOSB Bot!"></textarea>
         </div>
         <div class="form-group">
-          <label>Login Zaroori Hai?</label>
+          <label>Require Login?</label>
           <div class="toggle-wrap">
             <div class="toggle" id="auth-toggle" onclick="toggleAuth()"></div>
-            <span class="toggle-label" id="auth-label">Nahi — koi bhi seedha menus dekh sakta hai</span>
+            <span class="toggle-label" id="auth-label">No — anyone can browse menus directly</span>
           </div>
-          <p class="help">OFF rakho to user bina login ke menus dekh sakta hai. ON karo to pehle registration number + DOB maanga jayega.</p>
+          <p class="help">OFF: users can browse menus without logging in. ON: registration number + date of birth required first.</p>
         </div>
-        <button class="btn btn-primary" onclick="saveSettings()">💾 Settings Save Karo</button>
+        <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
       </div>
 
       <div class="card">
@@ -208,9 +208,9 @@ textarea{resize:vertical;min-height:80px}
             <div class="logo-placeholder">📷<br>Upload<br>Logo</div>
           </div>
           <div>
-            <p style="font-size:13px;color:#475569;margin-bottom:8px">Logo upload karo — sidebar aur bot mein dikhega.</p>
-            <p class="help">Recommended: 512×512 PNG ya JPG</p>
-            <button class="btn btn-secondary" style="margin-top:10px" onclick="document.getElementById('logo-input').click()">📁 File Chunein</button>
+            <p style="font-size:13px;color:#475569;margin-bottom:8px">Upload a logo — shown in the sidebar and sent to users on /start.</p>
+            <p class="help">Recommended: 512×512 PNG or JPG</p>
+            <button class="btn btn-secondary" style="margin-top:10px" onclick="document.getElementById('logo-input').click()">📁 Choose File</button>
           </div>
         </div>
         <input type="file" id="logo-input" accept="image/*" style="display:none" onchange="uploadLogo(this)">
@@ -219,10 +219,10 @@ textarea{resize:vertical;min-height:80px}
       <div class="card">
         <div class="card-title">🔐 Admin Password</div>
         <div class="form-group">
-          <label>Naya Password</label>
-          <input type="password" id="s-pwd" placeholder="Naya password likhein">
+          <label>New Password</label>
+          <input type="password" id="s-pwd" placeholder="Enter new password">
         </div>
-        <button class="btn btn-secondary" onclick="savePassword()">🔑 Password Badlo</button>
+        <button class="btn btn-secondary" onclick="savePassword()">🔑 Change Password</button>
       </div>
     </div>
 
@@ -230,10 +230,10 @@ textarea{resize:vertical;min-height:80px}
     <div id="section-menus" class="section">
       <div class="tree-header">
         <span style="font-size:15px;font-weight:600">Menu Structure</span>
-        <button class="btn btn-primary" onclick="openAddMenu(null)">➕ Root Menu Add Karo</button>
+        <button class="btn btn-primary" onclick="openAddMenu(null)">➕ Add Root Menu</button>
       </div>
       <div class="menu-tree" id="menu-tree">
-        <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Koi menu nahi hai.<br>"Root Menu Add Karo" dabao.</div></div>
+        <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No menus yet.<br>Click "Add Root Menu" to get started.</div></div>
       </div>
     </div>
 
@@ -243,7 +243,7 @@ textarea{resize:vertical;min-height:80px}
 <!-- ADD/EDIT MENU MODAL -->
 <div class="modal-bg" id="menu-modal">
   <div class="modal">
-    <div class="modal-title" id="mm-title">Menu Add Karo</div>
+    <div class="modal-title" id="mm-title">Add Menu</div>
     <input type="hidden" id="mm-id">
     <input type="hidden" id="mm-parent">
     <div class="form-group">
@@ -251,17 +251,17 @@ textarea{resize:vertical;min-height:80px}
       <input type="text" id="mm-emoji" placeholder="e.g. 📚 🔢 📄">
     </div>
     <div class="form-group">
-      <label>🇮🇳 Menu Title — हिंदी *</label>
+      <label>🇮🇳 Menu Title — Hindi *</label>
       <input type="text" id="mm-title-in" placeholder="e.g. अध्ययन सामग्री">
     </div>
     <div class="form-group">
       <label>🇬🇧 Menu Title — English</label>
       <input type="text" id="mm-title-en" placeholder="e.g. Study Material">
-      <p class="help">Khali chodne par Hindi title hi dikhega dono languages mein</p>
+      <p class="help">Leave empty to use the Hindi title for both languages</p>
     </div>
     <div class="form-group">
       <label>Description (optional)</label>
-      <textarea id="mm-desc" rows="2" placeholder="Chhota description..."></textarea>
+      <textarea id="mm-desc" rows="2" placeholder="Short description..."></textarea>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('menu-modal')">Cancel</button>
@@ -273,7 +273,7 @@ textarea{resize:vertical;min-height:80px}
 <!-- CONTENT MODAL -->
 <div class="modal-bg" id="content-modal">
   <div class="modal">
-    <div class="modal-title" id="cm-title">Content Add Karo</div>
+    <div class="modal-title" id="cm-title">Add Content</div>
     <input type="hidden" id="cm-menu-id">
     <div class="tabs">
       <button class="tab active" onclick="switchTab('text')">📝 Text</button>
@@ -282,12 +282,12 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div id="tab-text">
       <div class="form-group">
-        <label>🇮🇳 Title — हिंदी (optional)</label>
+        <label>🇮🇳 Title — Hindi (optional)</label>
         <input type="text" id="ct-title-text" placeholder="e.g. महत्वपूर्ण जानकारी">
       </div>
       <div class="form-group">
-        <label>🇮🇳 Message — हिंदी *</label>
-        <textarea id="ct-text" rows="4" placeholder="यहाँ हिंदी में लिखें..."></textarea>
+        <label>🇮🇳 Message — Hindi *</label>
+        <textarea id="ct-text" rows="4" placeholder="Write Hindi content here..."></textarea>
       </div>
       <div style="height:1px;background:#f1f5f9;margin:10px 0"></div>
       <div class="form-group">
@@ -296,12 +296,12 @@ textarea{resize:vertical;min-height:80px}
       </div>
       <div class="form-group">
         <label>🇬🇧 Message — English (optional)</label>
-        <textarea id="ct-text-en" rows="4" placeholder="Write in English here... (khali chodne par Hindi content dikhega)"></textarea>
+        <textarea id="ct-text-en" rows="4" placeholder="Write English content here... (leave empty to show Hindi content)"></textarea>
       </div>
     </div>
     <div id="tab-pdf" style="display:none">
       <div class="form-group">
-        <label>🇮🇳 Title — हिंदी (optional)</label>
+        <label>🇮🇳 Title — Hindi (optional)</label>
         <input type="text" id="ct-title-pdf" placeholder="e.g. अध्याय 1 PDF">
       </div>
       <div class="form-group">
@@ -309,14 +309,14 @@ textarea{resize:vertical;min-height:80px}
         <input type="text" id="ct-title-pdf-en" placeholder="e.g. Chapter 1 PDF">
       </div>
       <div class="upload-zone" onclick="document.getElementById('pdf-input').click()">
-        📄 PDF file chunne ke liye yahan click karein
+        📄 Click here to select a PDF file
         <div class="file-chosen" id="pdf-name"></div>
       </div>
       <input type="file" id="pdf-input" accept=".pdf" style="display:none" onchange="document.getElementById('pdf-name').textContent=this.files[0]?.name||''">
     </div>
     <div id="tab-link" style="display:none">
       <div class="form-group">
-        <label>🇮🇳 Button Label — हिंदी *</label>
+        <label>🇮🇳 Button Label — Hindi *</label>
         <input type="text" id="ct-title-link" placeholder="e.g. आधिकारिक वेबसाइट">
       </div>
       <div class="form-group">
@@ -330,7 +330,7 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('content-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveContent()">Add Karo</button>
+      <button class="btn btn-primary" onclick="saveContent()">Add</button>
     </div>
   </div>
 </div>
@@ -341,8 +341,8 @@ textarea{resize:vertical;min-height:80px}
     <div class="modal-title" id="vm-title">Content</div>
     <div id="vm-body"></div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('view-modal')">Bandh Karo</button>
-      <button class="btn btn-primary" id="vm-add-btn">➕ Content Add Karo</button>
+      <button class="btn btn-secondary" onclick="closeModal('view-modal')">Close</button>
+      <button class="btn btn-primary" id="vm-add-btn">➕ Add Content</button>
     </div>
   </div>
 </div>
@@ -391,8 +391,8 @@ async function loadSettings() {
 function setAuthToggle(on) {
   const t = document.getElementById('auth-toggle');
   const l = document.getElementById('auth-label');
-  if (on) { t.classList.add('on'); l.textContent = 'Haan — pehle registration + DOB maanga jayega'; }
-  else { t.classList.remove('on'); l.textContent = 'Nahi — koi bhi seedha menus dekh sakta hai'; }
+  if (on) { t.classList.add('on'); l.textContent = 'Yes — registration number + DOB required'; }
+  else { t.classList.remove('on'); l.textContent = 'No — anyone can browse menus directly'; }
   settings.require_auth = on;
 }
 
@@ -404,22 +404,22 @@ function toggleAuth() {
 async function saveSettings() {
   const name = document.getElementById('s-name').value.trim();
   const welcome = document.getElementById('s-welcome').value.trim();
-  if (!name) return toast('Bot naam zaroori hai!', true);
+  if (!name) return toast('Bot name is required!', true);
   const welcomeEn = document.getElementById('s-welcome-en').value.trim();
   await api('/api/settings', 'POST', {key:'bot_name', value:name});
   await api('/api/settings', 'POST', {key:'welcome_message', value:welcome});
   await api('/api/settings', 'POST', {key:'welcome_message_en', value:welcomeEn});
   await api('/api/settings', 'POST', {key:'require_auth', value: settings.require_auth});
   document.getElementById('sb-bot-name').textContent = name;
-  toast('Settings save ho gayi!');
+  toast('Settings saved!');
 }
 
 async function savePassword() {
   const pwd = document.getElementById('s-pwd').value.trim();
-  if (!pwd) return toast('Password khali nahi ho sakta!', true);
+  if (!pwd) return toast('Password cannot be empty!', true);
   await api('/api/settings', 'POST', {key:'admin_password', value:pwd});
   document.getElementById('s-pwd').value = '';
-  toast('Password badal gaya!');
+  toast('Password changed!');
 }
 
 async function uploadLogo(input) {
@@ -433,7 +433,7 @@ async function uploadLogo(input) {
     document.getElementById('logo-box').innerHTML = `<img src="${d.url}">`;
     const sbLogo = document.getElementById('sb-logo-el');
     sbLogo.innerHTML = `<img src="${d.url}" style="width:36px;height:36px;border-radius:8px;object-fit:cover">`;
-    toast('Logo upload ho gaya!');
+    toast('Logo uploaded!');
   }
 }
 
@@ -458,7 +458,7 @@ function renderTree() {
   const roots = allMenus.filter(m => !m.parent_id);
   const el = document.getElementById('menu-tree');
   if (!roots.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Koi menu nahi hai.<br>"Root Menu Add Karo" dabao.</div></div>';
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No menus yet.<br>Click "Add Root Menu" to get started.</div></div>';
     return;
   }
   el.innerHTML = roots.map(m => renderNode(m, 0)).join('');
@@ -473,7 +473,7 @@ function renderNode(menu, depth) {
     <div class="menu-row" style="padding-left:${pl}px">
       <div class="toggle-btn" onclick="toggleNode(${menu.id})">${children.length ? '▶' : '◦'}</div>
       <span class="m-emoji">${menu.emoji || '📌'}</span>
-      <div class="m-title">${menu.title}${menu.description?`<div class="m-desc">${menu.description}</div>`:''}</div>
+      <div class="m-title">${menu.title}${menu.title_en ? `<span style="color:#94a3b8;font-weight:400"> / ${menu.title_en}</span>` : ''}${menu.description?`<div class="m-desc">${menu.description}</div>`:''}</div>
       <div class="m-actions">
         <button class="btn btn-secondary btn-sm" onclick="viewContent(${menu.id},'${e} ${t}')">📄 Content</button>
         <button class="btn btn-secondary btn-sm" onclick="openAddMenu(${menu.id})">➕ Sub</button>
@@ -482,7 +482,7 @@ function renderNode(menu, depth) {
       </div>
     </div>
     <div class="submenu-wrap" id="sw-${menu.id}" style="display:none">
-      ${children.length ? children.map(c => renderNode(c, depth+1)).join('') : '<div style="padding:8px 16px;font-size:11px;color:#94a3b8">Sub-menu nahi hai</div>'}
+      ${children.length ? children.map(c => renderNode(c, depth+1)).join('') : '<div style="padding:8px 16px;font-size:11px;color:#94a3b8">No sub-menus</div>'}
     </div>
   </div>`;
 }
@@ -496,7 +496,7 @@ function toggleNode(id) {
 
 // ---- ADD/EDIT MENU ----
 function openAddMenu(parentId) {
-  document.getElementById('mm-title').textContent = parentId ? 'Sub-Menu Add Karo' : 'Root Menu Add Karo';
+  document.getElementById('mm-title').textContent = parentId ? 'Add Sub-Menu' : 'Add Root Menu';
   document.getElementById('mm-id').value = '';
   document.getElementById('mm-parent').value = parentId || '';
   document.getElementById('mm-emoji').value = '';
@@ -509,7 +509,7 @@ function openAddMenu(parentId) {
 function openEditMenu(id) {
   const m = allMenus.find(x => x.id === id);
   if (!m) return;
-  document.getElementById('mm-title').textContent = 'Menu Edit Karo';
+  document.getElementById('mm-title').textContent = 'Edit Menu';
   document.getElementById('mm-id').value = id;
   document.getElementById('mm-parent').value = m.parent_id || '';
   document.getElementById('mm-emoji').value = m.emoji || '';
@@ -526,22 +526,22 @@ async function saveMenu() {
   const title_en = document.getElementById('mm-title-en').value.trim();
   const emoji = document.getElementById('mm-emoji').value.trim();
   const desc = document.getElementById('mm-desc').value.trim();
-  if (!title) return toast('Hindi title zaroori hai!', true);
+  if (!title) return toast('Hindi title is required!', true);
   if (id) {
     await api(`/api/menus/${id}`, 'PUT', {title, title_en, emoji, description:desc, active:true});
-    toast('Menu update ho gaya!');
+    toast('Menu updated!');
   } else {
     await api('/api/menus', 'POST', {parent_id: parentId || null, title, title_en, emoji, description:desc});
-    toast('Menu add ho gaya!');
+    toast('Menu added!');
   }
   closeModal('menu-modal');
   await loadMenuTree();
 }
 
 async function delMenu(id, title) {
-  if (!confirm(`"${title}" aur uske sare sub-menus aur content delete honge. Pakka?`)) return;
+  if (!confirm(`Delete "${title}" along with all its sub-menus and content?`)) return;
   await api(`/api/menus/${id}`, 'DELETE');
-  toast('Menu delete ho gaya!');
+  toast('Menu deleted!');
   await loadMenuTree();
 }
 
@@ -551,7 +551,7 @@ async function viewContent(menuId, menuTitle) {
   const items = await (await fetch(`/api/menus/${menuId}/content`)).json();
   const body = document.getElementById('vm-body');
   if (!items.length) {
-    body.innerHTML = '<div class="empty-state" style="padding:24px"><div class="empty-icon">📂</div><div class="empty-text">Koi content nahi hai abhi.</div></div>';
+    body.innerHTML = '<div class="empty-state" style="padding:24px"><div class="empty-icon">📂</div><div class="empty-text">No content added yet.</div></div>';
   } else {
     body.innerHTML = `<div class="content-list">${items.map(c => `
       <div class="content-item">
@@ -567,7 +567,7 @@ async function viewContent(menuId, menuTitle) {
 }
 
 function openContentModal(menuId, menuTitle) {
-  document.getElementById('cm-title').textContent = menuTitle + ' — Content Add';
+  document.getElementById('cm-title').textContent = menuTitle + ' — Add Content';
   document.getElementById('cm-menu-id').value = menuId;
   document.getElementById('ct-title-text').value = '';
   document.getElementById('ct-text').value = '';
@@ -598,34 +598,34 @@ async function saveContent() {
   fd.append('type', currentTab);
   if (currentTab === 'text') {
     const content = document.getElementById('ct-text').value.trim();
-    if (!content) return toast('Hindi text likhna zaroori hai!', true);
+    if (!content) return toast('Hindi text is required!', true);
     fd.append('title', document.getElementById('ct-title-text').value.trim());
     fd.append('title_en', document.getElementById('ct-title-en').value.trim());
     fd.append('content', content);
     fd.append('content_en', document.getElementById('ct-text-en').value.trim());
   } else if (currentTab === 'pdf') {
     const file = document.getElementById('pdf-input').files[0];
-    if (!file) return toast('PDF file chunna zaroori hai!', true);
+    if (!file) return toast('Please select a PDF file!', true);
     fd.append('title', document.getElementById('ct-title-pdf').value.trim() || file.name);
     fd.append('title_en', document.getElementById('ct-title-pdf-en').value.trim());
     fd.append('pdf', file);
   } else {
     const url = document.getElementById('ct-url').value.trim();
     const title = document.getElementById('ct-title-link').value.trim();
-    if (!url || !title) return toast('Hindi label aur URL dono zaroori hain!', true);
+    if (!url || !title) return toast('Hindi label and URL are both required!', true);
     fd.append('title', title);
     fd.append('title_en', document.getElementById('ct-title-link-en').value.trim());
     fd.append('content', url);
   }
   const r = await fetch(`/api/menus/${menuId}/content`, {method:'POST', body:fd});
   const d = await r.json();
-  if (d.ok) { toast('Content add ho gaya!'); closeModal('content-modal'); }
+  if (d.ok) { toast('Content added!'); closeModal('content-modal'); }
 }
 
 async function delContent(id, menuId, menuTitle) {
-  if (!confirm('Yeh content delete karna chahte ho?')) return;
+  if (!confirm('Delete this content item?')) return;
   await api(`/api/content/${id}`, 'DELETE');
-  toast('Delete ho gaya!');
+  toast('Deleted!');
   viewContent(menuId, menuTitle);
 }
 
