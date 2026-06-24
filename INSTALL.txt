@@ -1,0 +1,107 @@
+=====================================================
+  UPSOSB Bot - Installation Guide
+=====================================================
+
+PEHLI BAAR INSTALL KARNE KE STEPS
+------------------------------------
+
+STEP 1 - Node.js Install Karein
+  1. Browser mein yeh link kholein: https://nodejs.org
+  2. "LTS" version download karein
+  3. Downloaded file par double-click karein
+  4. "Next > Next > Install" karke install karein
+  5. Install hone ke baad computer restart karein
+
+STEP 2 - Bot Folder Copy Karein
+  1. "upsosb-telegram-bot" folder apne computer par copy karein
+     (jaise C:\Users\YourName\Desktop\upsosb-telegram-bot)
+
+STEP 3 - Pehli Baar Setup
+  1. "upsosb-telegram-bot" folder kholein
+  2. "install.bat" par double-click karein
+  3. Wait karein — Node.js check, packages install, database
+     setup sab automatic ho jayega
+  4. Browser mein Admin Portal khul jayega (http://localhost:3000)
+  5. 2 kali windows khul jayegi — unhe band mat karein
+
+STEP 4 - Admin Portal Use Karein
+  Browser mein kholein: http://localhost:3000
+  - Menus add/edit/delete karein
+  - Welcome message badlein
+  - Logo upload karein
+  - PDF upload karein
+
+
+ROJE CHALANE KE STEPS
+------------------------------------
+
+  1. "upsosb-telegram-bot" folder kholein
+  2. "start.bat" par double-click karein
+  3. 2 kali windows khulegi + browser mein Admin Portal
+  4. Bas! Bot chal raha hai
+
+
+BOT BAND KARNA HO TO
+------------------------------------
+
+  1. Jo 2 kali windows khuli hain unhe band karein
+  2. Ya Windows Task Manager mein node.exe band karein
+
+
+NAYA BOT TOKEN LAGANA HO TO
+------------------------------------
+
+  1. Telegram mein @BotFather kholein
+  2. /newbot likhein aur steps follow karein
+  3. Token copy karein (kuch aisa dikhega: 1234567890:AAHxxx...)
+  4. Admin Portal kholein: http://localhost:3000
+  5. Bot Settings mein jaayein
+  6. "Telegram Bot Token" mein paste karein
+  7. "Save Token" dabayein
+  8. start.bat band karke dobara chalayein
+
+
+ADMIN PORTAL KI JAANKARI
+------------------------------------
+
+  Link     : http://localhost:3000
+  Password : admin123 (Settings mein badal sakte hain)
+
+  Dashboard  - Stats dekhein (menus, PDFs, content)
+  Settings   - Bot naam, welcome message, logo, token badlein
+  Menu Manager - Menus add/edit/delete karein, PDF/text upload karein
+
+
+KUCH KAAM NA KARE TO
+------------------------------------
+
+  Problem: "Bot chal nahi raha"
+  Fix    : start.bat band karke dobara chalayein
+
+  Problem: "Admin portal nahi khul raha"
+  Fix    : Browser mein manually likho: http://localhost:3000
+
+  Problem: "install.bat mein error aa raha hai"
+  Fix    : Node.js sahi se install hua ya nahi check karein
+           CMD kholein, "node -v" likhein
+           Version dikhna chahiye (jaise v20.x.x)
+
+  Problem: "Port already in use"
+  Fix    : Task Manager mein node.exe dhundo aur band karo
+           Phir start.bat chalao
+
+
+ZARURI NOTES
+------------------------------------
+
+  - Bot tab tak chalega jab tak laptop on hai aur
+    kali windows band nahi hogi
+  - Laptop band karne par bot band ho jayega
+  - Admin portal mein jo bhi change karein — bot mein
+    turant reflect hoga, restart ki zaroorat nahi
+  - data/ folder mein database hai — ise delete mat karna
+
+
+=====================================================
+  Support ke liye developer se sampark karein
+=====================================================
