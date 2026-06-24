@@ -274,7 +274,8 @@ bot.on('callback_query', async (query) => {
     }
 
     if (data === 'home') {
-      await showMainMenu(chatId, msgId);
+      try { await bot.deleteMessage(chatId, msgId); } catch (e) {}
+      await showMainMenu(chatId, null);
     } else if (data.startsWith('m:')) {
       const menuId = parseInt(data.split(':')[1]);
       await showMenu(chatId, msgId, menuId);
@@ -283,7 +284,7 @@ bot.on('callback_query', async (query) => {
     console.error('Callback error:', e.message);
   }
 
-  await bot.answerCallbackQuery(query.id);
+  try { await bot.answerCallbackQuery(query.id); } catch (e) {}
 });
 
 // ============================================================
