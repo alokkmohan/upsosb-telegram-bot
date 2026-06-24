@@ -3,7 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const db = require('./db');
 
-const token = process.env.BOT_TOKEN || '8557217217:AAHwgY6QgFyuCF4Nz1ylIqz0-_JOUmxZmoU';
+const savedToken = (() => { try { return require('./db').getSettings().bot_token; } catch(e) { return ''; } })();
+const token = process.env.BOT_TOKEN || savedToken || '8557217217:AAHwgY6QgFyuCF4Nz1ylIqz0-_JOUmxZmoU';
 
 const bot = new TelegramBot(token, {
   polling: { interval: 300, autoStart: true, params: { timeout: 10 } },

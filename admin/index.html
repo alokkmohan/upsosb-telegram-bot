@@ -217,6 +217,20 @@ textarea{resize:vertical;min-height:80px}
       </div>
 
       <div class="card">
+        <div class="card-title">🤖 Telegram Bot Token</div>
+        <div class="form-group">
+          <label>Bot Token</label>
+          <input type="text" id="s-token" placeholder="1234567890:AAHxxx..." autocomplete="off">
+          <p class="help">BotFather se naya token milega. Save karne ke baad bot restart karein.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <input type="checkbox" id="show-token" onchange="document.getElementById('s-token').type=this.checked?'text':'password'">
+          <label for="show-token" style="margin:0;font-weight:400;cursor:pointer">Show token</label>
+        </div>
+        <button class="btn btn-secondary" onclick="saveToken()">💾 Save Token</button>
+      </div>
+
+      <div class="card">
         <div class="card-title">🔐 Admin Password</div>
         <div class="form-group">
           <label>New Password</label>
@@ -378,6 +392,8 @@ async function loadSettings() {
   document.getElementById('s-name').value = settings.bot_name || '';
   document.getElementById('s-welcome').value = settings.welcome_message || '';
   document.getElementById('s-welcome-en').value = settings.welcome_message_en || '';
+  document.getElementById('s-token').value = settings.bot_token || '';
+  document.getElementById('s-token').type = 'password';
   document.getElementById('sb-bot-name').textContent = settings.bot_name || 'Bot';
   const authOn = settings.require_auth === true || settings.require_auth === 'true';
   setAuthToggle(authOn);
@@ -412,6 +428,14 @@ async function saveSettings() {
   await api('/api/settings', 'POST', {key:'require_auth', value: settings.require_auth});
   document.getElementById('sb-bot-name').textContent = name;
   toast('Settings saved!');
+}
+
+async function saveToken() {
+  const token = document.getElementById('s-token').value.trim();
+  if (!token) return toast('Token cannot be empty!', true);
+  if (!token.includes(':')) return toast('Invalid token format!', true);
+  await api('/api/settings', 'POST', {key:'bot_token', value:token});
+  toast('Token saved! Please restart the bot (close and reopen start.bat).');
 }
 
 async function savePassword() {
