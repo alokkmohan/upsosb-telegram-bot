@@ -21,7 +21,7 @@ function initFile(file, defaultData) {
 // Initialize data files with defaults
 initFile('settings.json', {
   bot_name: 'UPSOSB Bot',
-  welcome_message: '🙏 Namaskar! UPSOSB Bot mein aapka swagat hai.\n\nNiche se apna option chunein:',
+  welcome_message: '🙏 नमस्कार! UPSOSB बॉट में आपका स्वागत है।\n\nनीचे से अपना विकल्प चुनें:',
   logo_path: '',
   require_auth: false,
   admin_password: 'admin123'
