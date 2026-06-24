@@ -108,12 +108,6 @@ addText(aboutUPSOSB,
   'About UPSOSB',
   '🏫 *Uttar Pradesh State Open School Board (UPSOSB)*\n\nUPSOSB manages and administers secondary education in Uttar Pradesh.\n\n📌 *Key Functions:*\n• Conducting exams for Classes 9, 10, 11, 12\n• Declaring examination results\n• Issuing admit cards\n• Determining education policy\n\n🌐 Website: upsosb.gov.in'
 );
-addPDF(aboutUPSOSB, 'विजन और मिशन (हिंदी)',         'PDF Hindi/विजन और मिशन.pdf',           'Vision and Mission (Hindi)');
-addPDF(aboutUPSOSB, 'कार्यक्रम (हिंदी)',             'PDF Hindi/कार्यक्रम.pdf',               'Programmes (Hindi)');
-addPDF(aboutUPSOSB, 'अधिनियम की पृष्ठभूमि (हिंदी)', 'PDF Hindi/अधिनियम की पृष्ठभूमि.pdf',   'Act Background (Hindi)');
-addPDF(aboutUPSOSB, 'Vision and Mission (English)',   'PDF English/Vision_Mission.pdf',         'Vision and Mission (English)');
-addPDF(aboutUPSOSB, 'Programmes (English)',           'PDF English/Programmes.pdf',             'Programmes (English)');
-addPDF(aboutUPSOSB, 'Ordinance & Act (English)',      'PDF English/Ordinance_Act_.pdf',         'Ordinance & Act (English)');
 
 // ============================================================
 // परीक्षा समय-सारिणी (Exam Schedule)
@@ -124,7 +118,6 @@ addText(examSchedule,
   'Exam Schedule 2025',
   '📅 *Exam Schedule 2025*\n\n*Class 10 (High School):*\n• Start: 22 February 2025\n• End: 12 March 2025\n\n*Class 12 (Intermediate):*\n• Start: 22 February 2025\n• End: 12 March 2025\n\n⏰ Exam Time: 8:00 AM to 11:15 AM\n\n_See the link below for detailed schedule._'
 );
-addPDF(examSchedule, 'नमूना समय-सारिणी PDF', samplePDF, 'Sample Time Table PDF');
 addLink(examSchedule, 'आधिकारिक UPSOSB वेबसाइट', 'https://upsosb.gov.in', 'Official UPSOSB Website');
 
 // ============================================================
